@@ -13,17 +13,14 @@ public record EmployeeInfo(
         EmergencyContact[] emergencyContacts) {
 
     public EmployeeInfo {
-        // Keep the record independent of the caller's mutable array.
         emergencyContacts = emergencyContacts.clone();
     }
 
     @Override
     public EmergencyContact[] emergencyContacts() {
-        // Do not expose the record's internal array.
         return emergencyContacts.clone();
     }
 
-    /** Compare contact contents, not array identities. */
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -50,7 +47,6 @@ public record EmployeeInfo(
         return toString(0);
     }
 
-    /** Formats this record with the requested number of leading tabs. */
     public String toString(int tabLevel) {
         if (tabLevel < 0) {
             throw new IllegalArgumentException("tabLevel must not be negative.");
@@ -73,7 +69,6 @@ public record EmployeeInfo(
         return text.toString();
     }
 
-    /** A nested builder, not a subclass: records themselves are final. */
     public static class Builder {
         private String employeeId;
         private ContactInfo employeeContact;
@@ -107,16 +102,12 @@ public record EmployeeInfo(
         }
 
         public EmployeeInfo build() {
-            // The builder's growable list becomes an exact-length array per employee.
             EmergencyContact[] contacts = new EmergencyContact[emergencyContacts.size()];
             for (int i = 0; i < contacts.length; i++) {
                 contacts[i] = emergencyContacts.get(i);
             }
-            return new EmployeeInfo(employeeId,
-                    employeeContact,
-                    supervisorContact,
-                    employmentInfo,
-                    contacts);
+            return new EmployeeInfo(employeeId, employeeContact, supervisorContact,
+                    employmentInfo, contacts);
         }
     }
 }
